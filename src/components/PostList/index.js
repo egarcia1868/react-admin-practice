@@ -1,17 +1,19 @@
 import * as React from "react";
+import { useMediaQuery } from "@material-ui/core"
 import {
   Filter, 
-  List,
   Datagrid,
   TextField,
   ReferenceField,
   EditButton,
+  List,
   Edit,
   Create,
   SimpleForm,
   ReferenceInput,
   SelectInput,
   TextInput,
+  SimpleList,
 } from 'react-admin';
 
 const PostFilter = props => (
@@ -20,21 +22,57 @@ const PostFilter = props => (
     <ReferenceInput label="User" source="userId" reference="users" allowEmpty>
       <SelectInput optionText="name" />
     </ReferenceInput>  
- </Filter>
+  </Filter>
 )
 
-const PostList = props => (
-    <List filters={<PostFilter />} {...props}>
-        <Datagrid>
-          <TextField source="id" />
-          <ReferenceField source="userId" reference="users">
-            <TextField source="name" />
-          </ReferenceField>
-          <TextField source="title" />
-          <EditButton />
-        </Datagrid>
+// const PostList = props => {
+//   const isSmall = useMediaQuery(theme => theme.breakpoints.down("sm"));
+//   return (
+//     <List filters={<PostFilter />} {...props}>
+//       {isSmall ? (
+//         <SimpleList 
+//           primaryText={record => record.title}
+//           secondaryText={record => `${record.views} views`}
+//           tertiaryText={record => new Date(record.published_at).toLocaleDateString()}
+//         />
+//       ) : (
+//       <Datagrid>
+//         <TextField source="id" />
+//         <ReferenceField source="userId" reference="users">
+//           <TextField source="name" />
+//         </ReferenceField>
+//         <TextField source="title" />
+//         <TextField source="body" />
+//         <EditButton />
+//       </Datagrid>
+//       )}
+//     </List>
+//   )
+// };
+const PostList = props => {
+  const isSmall = useMediaQuery(theme => theme.breakpoints.down("sm"));
+  return (
+    <List {...props}>
+      {isSmall ? (
+        <SimpleList 
+          primaryText={record => record.title}
+          secondaryText={record => `${record.views} views`}
+          tertiaryText={record => new Date(record.published_at).toLocaleDateString()}
+        />
+      ) : (
+      <Datagrid>
+        <TextField source="id" />
+        <ReferenceField source="userId" reference="users">
+          <TextField source="name" />
+        </ReferenceField>
+        <TextField source="title" />
+        <TextField source="body" />
+        <EditButton />
+      </Datagrid>
+      )}
     </List>
-);
+  )
+};
 
 const PostEdit = props => (
   <Edit title={<PostTitle />}{...props}>
